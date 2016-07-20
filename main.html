@@ -6,10 +6,10 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     <link rel="stylesheet" href="static/main.css">
+    <script src="https://use.fontawesome.com/38606b4227.js"></script>
   </head>
   <body>
     <div id="wrapper" class="toggled">
-
     <!-- Sidebar -->
     <div id="sidebar-wrapper">
         <ul class="sidebar-nav">
@@ -23,16 +23,9 @@
     <div id="page-content-wrapper">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-11 col-md-offset-1">
+          <div class="col-md-12">
               <div id="map"></div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <ul data-bind="foreach:{data: markers, as: 'marker'}">
-              <li><span data-bind="text: marker.title"></span></li>
-            </ul>
-            <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+              <i class="fa fa-bars fa-4x" aria-hidden="true" id="menu-toggle"></i>
           </div>
         </div>
       </div>
