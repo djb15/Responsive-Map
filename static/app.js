@@ -96,20 +96,27 @@ function initMap() {
     title: locations[i].title});
     markers.push(marker);
   }
-  markers[0].visible = false;
-  console.log(markers[0]);
 }
 
 function googleError() {
   console.log("Not loaded properly");
 }
 
-var ViewModel = {
+function toggleBounce() {
+       if (marker.getAnimation() !== null) {
+         marker.setAnimation(null);
+       } else {
+         marker.setAnimation(google.maps.Animation.BOUNCE);
+       }
+     }
 
+var ViewModel = function(markers){
+  this.markers = markers;
+  return this.markers;
 };
 
 $(function () {
-  ko.applyBindings(ViewModel);
+  ko.applyBindings(new ViewModel(markers));
 
   $("#menu-toggle").click(function(e) {
       e.preventDefault();

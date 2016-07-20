@@ -16,6 +16,12 @@
             <li class="sidebar-brand" align="center">
               <p>Dirk and Beth's Food Website</p>
             </li>
+            <div class="input-group" id="filter">
+              <input class="form-control" type="text" name="name" placeholder="Filter" value="">
+            </div>
+            <!-- ko foreach: {data: markers, as: 'marker'} -->
+            <li data-bind="text: marker.title"></li>
+            <!-- /ko -->
         </ul>
     </div>
     <div id="page-content-wrapper">
