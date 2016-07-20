@@ -8,9 +8,40 @@
     <link rel="stylesheet" href="static/main.css">
   </head>
   <body>
-    <div class="col-md-6">
-      <div id="map"></div>
+    <div id="wrapper" class="toggled">
+
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <li class="sidebar-brand">
+                <a href="#">
+                    Start Bootstrap
+                </a>
+            </li>
+        </ul>
     </div>
+    <div id="page-content-wrapper">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-11 col-md-offset-1">
+              <div id="map"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <ul data-bind="foreach:{data: markers, as: 'marker'}">
+              <li><span data-bind="text: marker.title"></span></li>
+            </ul>
+            <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
     <script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
     <script type='text/javascript' src='static/knockout-3.4.0.js'></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
