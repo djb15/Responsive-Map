@@ -20,7 +20,9 @@
               <input data-bind="textInput: inputText" class="form-control" type="text" name="name" placeholder="Filter" value="">
             </div>
             <!-- ko foreach: {data: ko_markers, as: 'marker'} -->
-            <li data-bind="text: marker.title, click: $parent.selectMarker"></li>
+            <li>
+              <a href="#" class="places" data-bind="text: marker.title, click: $parent.selectMarker, attr: {id: marker.metadata}"></a>
+            </li>
             <!-- /ko -->
         </ul>
     </div>

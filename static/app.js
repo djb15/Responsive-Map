@@ -94,8 +94,10 @@ var initMap = function() {
     map: map,
     //label: locations[i].label,
     title: locations[i].title});
+    marker.metadata = i;
     markers.push(marker);
     add_animation(marker);
+    console.log(marker);
   }
   ko.applyBindings(new ViewModel());
 };
@@ -118,6 +120,8 @@ var ViewModel = function(){
   self.ko_markers = ko.observableArray();
 
   self.selectMarker = function(marker){
+    $(".places").removeClass("clicked");
+    $("#" + marker.metadata).toggleClass("clicked");
     google.maps.event.trigger(marker, 'click');
   };
 
