@@ -81,10 +81,12 @@ var locations = [{
 ];
 
 var markers = [];
+var map;
+var infoWindow;
 
 var initMap = function() {
   var mapDiv = document.getElementById('map');
-  var map = new google.maps.Map(mapDiv, {
+  map = new google.maps.Map(mapDiv, {
     center: {lat: 51.507, lng: -0.128},
     zoom: 12
   });
@@ -97,8 +99,11 @@ var initMap = function() {
     marker.metadata = i;
     markers.push(marker);
     add_animation(marker);
-    console.log(marker);
   }
+  infoWindow =  new google.maps.InfoWindow({
+       content: ""
+   });
+
   ko.applyBindings(new ViewModel());
 };
 
@@ -106,6 +111,7 @@ function add_animation(marker){
   marker.addListener('click', function() {
     marker.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(function(){ marker.setAnimation(null); }, 700);
+    showInfo(marker);
   });
 }
 
@@ -114,15 +120,38 @@ function googleError() {
   console.log("Not loaded properly");
 }
 
+function showInfo(marker){
+  infoWindow.setContent(marker.title);
+  infoWindow.open(map, marker);
+}
+
+function closeInfo(){
+  infoWindow.close();
+}
+
 var ViewModel = function(){
   var self = this;
   self.inputText = ko.observable('');
   self.ko_markers = ko.observableArray();
+  self.currentMarker = ko.observable('');
 
   self.selectMarker = function(marker){
-    $(".places").removeClass("clicked");
-    $("#" + marker.metadata).toggleClass("clicked");
-    google.maps.event.trigger(marker, 'click');
+    if (marker.metadata === self.currentMarker()){
+      if ($("#" + marker.metadata).hasClass("clicked")){
+        closeInfo();
+      }
+      else{
+        google.maps.event.trigger(marker, 'click');
+      }
+      $("#" + marker.metadata).toggleClass("clicked");
+
+    }
+    else{
+      $(".places").removeClass("clicked");
+      $("#" + marker.metadata).toggleClass("clicked");
+      google.maps.event.trigger(marker, 'click');
+    }
+    self.currentMarker(marker.metadata);
   };
 
 
