@@ -117,6 +117,11 @@ var ViewModel = function(){
   self.inputText = ko.observable('');
   self.ko_markers = ko.observableArray();
 
+  self.selectMarker = function(marker){
+    google.maps.event.trigger(marker, 'click');
+  };
+
+
   var all_markers = function(){
     for (var x = 0; x < markers.length; x++){
       self.ko_markers.push(markers[x]);
