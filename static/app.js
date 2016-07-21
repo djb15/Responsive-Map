@@ -92,13 +92,20 @@ var initMap = function() {
   for (var i = 0; i < locations.length; i++){
     var marker = new google.maps.Marker({position: locations[i].position,
     map: map,
-    label: locations[i].label,
+    //label: locations[i].label,
     title: locations[i].title});
     markers.push(marker);
+    add_animation(marker);
   }
   ko.applyBindings(new ViewModel());
 };
 
+function add_animation(marker){
+  marker.addListener('click', function() {
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(function(){ marker.setAnimation(null); }, 700);
+  });
+}
 
 
 function googleError() {
