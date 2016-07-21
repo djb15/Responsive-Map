@@ -113,6 +113,7 @@ var ViewModel = function(){
   var all_markers = function(){
     for (var x = 0; x < markers.length; x++){
       self.ko_markers.push(markers[x]);
+      markers[x].setVisible(true);
     }
   };
 
@@ -128,6 +129,10 @@ var ViewModel = function(){
       for (var x = 0; x < markers.length; x++){
         if(markers[x].title.toLowerCase().indexOf(self.inputText().toLowerCase()) >= 0) {
           self.ko_markers.push(markers[x]);
+          markers[x].setVisible(true);
+        }
+        else{
+          markers[x].setVisible(false);
         }
       }
     }
