@@ -80,9 +80,9 @@ var locations = [{
 },
 ];
 
-var markers = ko.observableArray();
+var markers = [];
 
-function initMap() {
+var initMap = function() {
   var mapDiv = document.getElementById('map');
   var map = new google.maps.Map(mapDiv, {
     center: {lat: 51.507, lng: -0.128},
@@ -96,28 +96,48 @@ function initMap() {
     title: locations[i].title});
     markers.push(marker);
   }
-}
+  ko.applyBindings(new ViewModel());
+};
+
+
 
 function googleError() {
   console.log("Not loaded properly");
 }
 
-function toggleBounce() {
-       if (marker.getAnimation() !== null) {
-         marker.setAnimation(null);
-       } else {
-         marker.setAnimation(google.maps.Animation.BOUNCE);
-       }
-     }
+var ViewModel = function(){
+  var self = this;
+  self.inputText = ko.observable('');
+  self.ko_markers = ko.observableArray();
 
-var ViewModel = function(markers){
-  this.markers = markers;
-  return this.markers;
+  var all_markers = function(){
+    for (var x = 0; x < markers.length; x++){
+      self.ko_markers.push(markers[x]);
+    }
+  };
+
+  all_markers();
+
+  var search = function (){
+    if (!self.inputText()){
+      self.ko_markers.removeAll();
+      all_markers();
+    }
+    else {
+      self.ko_markers.removeAll();
+      for (var x = 0; x < markers.length; x++){
+        if(markers[x].title.toLowerCase().indexOf(self.inputText().toLowerCase()) >= 0) {
+          self.ko_markers.push(markers[x]);
+        }
+      }
+    }
+  };
+
+  self.inputText.subscribe(search);
 };
 
-$(function () {
-  ko.applyBindings(new ViewModel(markers));
 
+$(function () {
   $("#menu-toggle").click(function(e) {
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");

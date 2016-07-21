@@ -17,9 +17,9 @@
               <p>Dirk and Beth's Food Website</p>
             </li>
             <div class="input-group" id="filter">
-              <input class="form-control" type="text" name="name" placeholder="Filter" value="">
+              <input data-bind="textInput: inputText" class="form-control" type="text" name="name" placeholder="Filter" value="">
             </div>
-            <!-- ko foreach: {data: markers, as: 'marker'} -->
+            <!-- ko foreach: {data: ko_markers, as: 'marker'} -->
             <li data-bind="text: marker.title"></li>
             <!-- /ko -->
         </ul>
