@@ -83,6 +83,7 @@ var locations = [{
 var markers = [];
 var map;
 var infoWindow;
+var mypos;
 
 var initMap = function() {
   var mapDiv = document.getElementById('map');
@@ -106,7 +107,7 @@ var initMap = function() {
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
-    var pos = {
+    my_pos = {
       lat: position.coords.latitude,
       lng: position.coords.longitude
     };
@@ -116,12 +117,11 @@ var initMap = function() {
       origin: new google.maps.Point(0, 0),
       anchor: new google.maps.Point(0, 32)
     };
-    var marker = new google.maps.Marker({position: pos,
+    var marker = new google.maps.Marker({position: my_pos,
       map: map,
       icon: my_location_icon});
     });
-  } 
-
+  }
   ko.applyBindings(new ViewModel());
 };
 
@@ -135,19 +135,35 @@ function add_animation(marker){
   });
 }
 
+function call_citymapper(marker, callback){
+  var latlng = locations[marker.metadata].position;
+  var end_location = latlng.lat + "%2C" + latlng.lng;
+  var start_location = my_pos.lat + "%2C" + my_pos.lng;
+  $.ajax({url: "https://developer.citymapper.com/api/1/traveltime/?startcoord=" + start_location + "&endcoord=" + end_location + "&key=60c96025c389f8f9eba5dca1b0bd8c5e",
+    success: function(data){
+      callback(data, marker);
+    }
+  });
+}
+
+function citymapper_callback(data, marker){
+  console.log("Data is here");
+  var travel_time = data.travel_time_minutes;
+  infoWindow.setContent(marker.title + ' ' + travel_time);
+}
 
 function googleError() {
   console.log("Not loaded properly");
 }
 
 function showInfo(marker){
+  call_citymapper(marker, citymapper_callback);
   infoWindow.setContent(marker.title);
   infoWindow.open(map, marker);
   google.maps.event.addListener(infoWindow,'closeclick',function(){
-    $(".places").removeClass("clicked");
-    //removes the marker
-   // then, remove the infowindows name from the array
-});
+      $(".places").removeClass("clicked");
+  });
+
 }
 
 function closeInfo(){
