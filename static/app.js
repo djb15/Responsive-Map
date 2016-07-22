@@ -104,6 +104,24 @@ var initMap = function() {
        content: ""
    });
 
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+    var pos = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude
+    };
+    var my_location_icon = {
+      url: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+      scaledSize: new google.maps.Size(20, 32),
+      origin: new google.maps.Point(0, 0),
+      anchor: new google.maps.Point(0, 32)
+    };
+    var marker = new google.maps.Marker({position: pos,
+      map: map,
+      icon: my_location_icon});
+    });
+  } 
+
   ko.applyBindings(new ViewModel());
 };
 
