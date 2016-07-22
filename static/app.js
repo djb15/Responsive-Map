@@ -112,6 +112,8 @@ function add_animation(marker){
     marker.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(function(){ marker.setAnimation(null); }, 700);
     showInfo(marker);
+    $(".places").removeClass("clicked");
+    $("#" + marker.metadata).addClass("clicked");
   });
 }
 
@@ -123,35 +125,36 @@ function googleError() {
 function showInfo(marker){
   infoWindow.setContent(marker.title);
   infoWindow.open(map, marker);
+  google.maps.event.addListener(infoWindow,'closeclick',function(){
+    $(".places").removeClass("clicked");
+    //removes the marker
+   // then, remove the infowindows name from the array
+});
 }
 
 function closeInfo(){
   infoWindow.close();
 }
 
+function selectMarker(marker){
+  if ($("#" + marker.metadata).hasClass("clicked")){
+    $("#" + marker.metadata).toggleClass("clicked");
+    closeInfo();
+  }
+  else{
+    google.maps.event.trigger(marker, 'click');
+    $(".places").removeClass("clicked");
+    $("#" + marker.metadata).toggleClass("clicked");
+  }
+}
+
 var ViewModel = function(){
   var self = this;
   self.inputText = ko.observable('');
   self.ko_markers = ko.observableArray();
-  self.currentMarker = ko.observable('');
 
   self.selectMarker = function(marker){
-    if (marker.metadata === self.currentMarker()){
-      if ($("#" + marker.metadata).hasClass("clicked")){
-        closeInfo();
-      }
-      else{
-        google.maps.event.trigger(marker, 'click');
-      }
-      $("#" + marker.metadata).toggleClass("clicked");
-
-    }
-    else{
-      $(".places").removeClass("clicked");
-      $("#" + marker.metadata).toggleClass("clicked");
-      google.maps.event.trigger(marker, 'click');
-    }
-    self.currentMarker(marker.metadata);
+    selectMarker(marker);
   };
 
 
