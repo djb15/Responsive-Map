@@ -84,6 +84,7 @@ var markers = [];
 var map;
 var infoWindow;
 var mypos;
+var xhr = null;
 
 var initMap = function() {
   var mapDiv = document.getElementById('map');
@@ -136,12 +137,18 @@ function add_animation(marker){
 }
 
 function call_citymapper(marker, callback){
+  if (xhr !== null){
+    xhr.abort();
+  }
   var latlng = locations[marker.metadata].position;
   var end_location = latlng.lat + "%2C" + latlng.lng;
   var start_location = my_pos.lat + "%2C" + my_pos.lng;
-  $.ajax({url: "https://developer.citymapper.com/api/1/traveltime/?startcoord=" + start_location + "&endcoord=" + end_location + "&key=60c96025c389f8f9eba5dca1b0bd8c5e",
+  xhr = $.ajax({url: "https://developer.citymapper.com/api/1/traveltime/?startcoord=" + start_location + "&endcoord=" + end_location + "&key=60c96025c389f8f9eba5dca1b0bd8c5e",
     success: function(data){
       callback(data, marker);
+    },
+    error: function(){
+      setTimeout(function(){citymapper_error(marker);}, 100);
     }
   });
 }
@@ -150,6 +157,11 @@ function citymapper_callback(data, marker){
   console.log("Data is here");
   var travel_time = data.travel_time_minutes;
   infoWindow.setContent(marker.title + ' ' + travel_time);
+}
+
+function citymapper_error(marker){
+  console.log("Error");
+  infoWindow.setContent("Citymapper could not be loaded");
 }
 
 function googleError() {
