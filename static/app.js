@@ -107,6 +107,7 @@ var initMap = function() {
    });
 
   if (navigator.geolocation) {
+    console.log("There is a navigator");
     navigator.geolocation.getCurrentPosition(function(position) {
     my_pos = {
       lat: position.coords.latitude,
@@ -121,7 +122,15 @@ var initMap = function() {
     var marker = new google.maps.Marker({position: my_pos,
       map: map,
       icon: my_location_icon});
-    });
+
+    }, function (error) {
+      if (error.code == error.PERMISSION_DENIED)
+        alert("You need location enabled for this website to work.  Please reload this website and enable location services.");
+    }
+  );
+}
+  else {
+    alert("You need a location enabled device for this website to work.");
   }
   ko.applyBindings(new ViewModel());
 };
@@ -144,15 +153,20 @@ function call_citymapper(marker, callback){
   var end_location = latlng.lat + "%2C" + latlng.lng;
   var start_location = my_pos.lat + "%2C" + my_pos.lng;
   var directions = "https://citymapper.com/directions?startcoord=" + start_location + "&endcoord=" + end_location + "&endname=" + escape(marker.title);
-  console.log(directions);
   xhr = $.ajax({url: "https://developer.citymapper.com/api/1/traveltime/?startcoord=" + start_location + "&endcoord=" + end_location + "&key=c71aa0158f72d9c3a84be9070cf45427",
     success: function(data){
       callback(data, marker, directions);
     },
-    error: function(){
-      setTimeout(function(){citymapper_error(marker);}, 100);
+    error: function(xhr){
+      if (!userAborted(xhr)){
+        setTimeout(function(){citymapper_error(marker);}, 100);
+      }
     }
   });
+}
+
+function userAborted(xhr) {
+  return !xhr.getAllResponseHeaders();
 }
 
 function citymapper_callback(data, marker, directions){
