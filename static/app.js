@@ -107,7 +107,6 @@ var initMap = function() {
    });
 
   if (navigator.geolocation) {
-    console.log("There is a navigator");
     navigator.geolocation.getCurrentPosition(function(position) {
     my_pos = {
       lat: position.coords.latitude,
@@ -134,6 +133,10 @@ var initMap = function() {
   }
   ko.applyBindings(new ViewModel());
 };
+
+function googleError(){
+  alert("The google map API could not be reached");
+}
 
 function add_animation(marker){
   marker.addListener('click', function() {
@@ -177,10 +180,6 @@ function citymapper_callback(data, marker, directions){
 
 function citymapper_error(marker){
   infoWindow.setContent("<h4 align='center'>"+ marker.title + "</h4><p align='center'>Citymapper could not be loaded</p>");
-}
-
-function googleError() {
-  console.log("Not loaded properly");
 }
 
 function showInfo(marker){
