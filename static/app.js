@@ -157,11 +157,12 @@ function call_citymapper(marker, callback){
 
 function citymapper_callback(data, marker, directions){
   var travel_time = data.travel_time_minutes;
-  infoWindow.setContent(marker.title + ' ' + travel_time + directions);
+  var window_content = "<h4 align='center'>" + marker.title + "</h4><p align='center'><a href="+ directions + "><button type='button' class='btn btn-default'>" + travel_time + " minutes to destination</button></a></p>";
+  infoWindow.setContent(window_content);
 }
 
 function citymapper_error(marker){
-  infoWindow.setContent("Citymapper could not be loaded");
+  infoWindow.setContent("<h4 align='center'>"+ marker.title + "</h4><p align='center'>Citymapper could not be loaded</p>");
 }
 
 function googleError() {
@@ -170,7 +171,7 @@ function googleError() {
 
 function showInfo(marker){
   call_citymapper(marker, citymapper_callback);
-  infoWindow.setContent(marker.title);
+  infoWindow.setContent("<h4 align='center'>" + marker.title + "</h4><p align='center'>Loading...</p>");
   infoWindow.open(map, marker);
   google.maps.event.addListener(infoWindow,'closeclick',function(){
       $(".places").removeClass("clicked");

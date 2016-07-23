@@ -3,6 +3,10 @@
   height: 100vh;
 }
 
+img {
+  align: middle;
+}
+
 .fa-bars {
   position: fixed;
   top: 10px;
