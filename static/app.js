@@ -166,6 +166,7 @@ function call_citymapper(marker, callback){
   var directions = "https://citymapper.com/directions?startcoord=" + start_location + "&endcoord=" + end_location + "&endname=" + escape(marker.title);
 
   xhr = $.ajax({url: "https://developer.citymapper.com/api/1/traveltime/?startcoord=" + start_location + "&endcoord=" + end_location + "&key=c71aa0158f72d9c3a84be9070cf45427",
+    headers: {"Access-Control-Allow-Origin": "*"},
     success: function(data){
       callback(data, marker, directions);
     },
