@@ -80,6 +80,7 @@ var locations = [{
 },
 ];
 
+//Some global variables being defined
 var markers = [];
 var map;
 var infoWindow;
@@ -87,6 +88,7 @@ var mypos;
 var xhr = null;
 
 var initMap = function() {
+  //Initialise the google map and add all the markers to the map
   var mapDiv = document.getElementById('map');
   map = new google.maps.Map(mapDiv, {
     center: {lat: 51.507, lng: -0.128},
@@ -96,17 +98,18 @@ var initMap = function() {
   for (var i = 0; i < locations.length; i++){
     var marker = new google.maps.Marker({position: locations[i].position,
     map: map,
-    //label: locations[i].label,
     title: locations[i].title});
     marker.metadata = i;
     markers.push(marker);
     add_animation(marker);
   }
+  //Initialise the info window for use later
   infoWindow =  new google.maps.InfoWindow({
        content: ""
    });
 
   if (navigator.geolocation) {
+    //Get the users current location and add a marker to the map
     navigator.geolocation.getCurrentPosition(function(position) {
     my_pos = {
       lat: position.coords.latitude,
@@ -125,20 +128,24 @@ var initMap = function() {
     }, function (error) {
       if (error.code == error.PERMISSION_DENIED)
         alert("You need location enabled for this website to work.  Please reload this website and enable location services.");
-    }
-  );
-}
+      }
+    );
+  }
+
   else {
     alert("You need a location enabled device for this website to work.");
   }
+  //Apply bindings only after map has been initialsed
   ko.applyBindings(new ViewModel());
 };
 
 function googleError(){
+  //Pop up alert if google map script could not be loaded
   alert("The google map API could not be reached");
 }
 
 function add_animation(marker){
+  //Function adds the bounce animation to markers and links with list view
   marker.addListener('click', function() {
     marker.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(function(){ marker.setAnimation(null); }, 700);
@@ -149,6 +156,7 @@ function add_animation(marker){
 }
 
 function call_citymapper(marker, callback){
+  //Make an async ajax request to citymapper
   if (xhr !== null){
     xhr.abort();
   }
@@ -156,6 +164,7 @@ function call_citymapper(marker, callback){
   var end_location = latlng.lat + "%2C" + latlng.lng;
   var start_location = my_pos.lat + "%2C" + my_pos.lng;
   var directions = "https://citymapper.com/directions?startcoord=" + start_location + "&endcoord=" + end_location + "&endname=" + escape(marker.title);
+
   xhr = $.ajax({url: "https://developer.citymapper.com/api/1/traveltime/?startcoord=" + start_location + "&endcoord=" + end_location + "&key=c71aa0158f72d9c3a84be9070cf45427",
     success: function(data){
       callback(data, marker, directions);
@@ -169,20 +178,24 @@ function call_citymapper(marker, callback){
 }
 
 function userAborted(xhr) {
+  //Checks to see if the user has aborted the ajax request to handle errors
   return !xhr.getAllResponseHeaders();
 }
 
 function citymapper_callback(data, marker, directions){
+  //The callback from citymapper to update the info window
   var travel_time = data.travel_time_minutes;
   var window_content = "<h4 align='center'>" + marker.title + "</h4><p align='center'><a href="+ directions + "><button type='button' class='btn btn-default'>" + travel_time + " minutes to destination</button></a></p>";
   infoWindow.setContent(window_content);
 }
 
 function citymapper_error(marker){
+  //Update the info window if ajax call to citymapper returns error
   infoWindow.setContent("<h4 align='center'>"+ marker.title + "</h4><p align='center'>Citymapper could not be loaded</p>");
 }
 
 function showInfo(marker){
+  //Opens the info window with basic data before ajax call succeeds
   call_citymapper(marker, citymapper_callback);
   infoWindow.setContent("<h4 align='center'>" + marker.title + "</h4><p align='center'>Loading...</p>");
   infoWindow.open(map, marker);
@@ -197,6 +210,7 @@ function closeInfo(){
 }
 
 function selectMarker(marker){
+  //Handles the list elements and their styling
   if ($("#" + marker.metadata).hasClass("clicked")){
     $("#" + marker.metadata).toggleClass("clicked");
     closeInfo();
@@ -209,6 +223,7 @@ function selectMarker(marker){
 }
 
 var ViewModel = function(){
+  //The knockout viewmodel
   var self = this;
   self.inputText = ko.observable('');
   self.ko_markers = ko.observableArray();
@@ -219,6 +234,7 @@ var ViewModel = function(){
 
 
   var all_markers = function(){
+    //Adds all the markers to the ko_markers observable array and shows all markers on map
     for (var x = 0; x < markers.length; x++){
       self.ko_markers.push(markers[x]);
       markers[x].setVisible(true);
@@ -228,6 +244,7 @@ var ViewModel = function(){
   all_markers();
 
   var search = function (){
+    //Search function used to filter the list and show/hide the corresponding markers on map
     if (!self.inputText()){
       self.ko_markers.removeAll();
       all_markers();
@@ -251,6 +268,7 @@ var ViewModel = function(){
 
 
 $(function () {
+  //Handles the menu button on page load
   $("#menu-toggle").click(function(e) {
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");

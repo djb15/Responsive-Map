@@ -3,10 +3,6 @@
   height: 100vh;
 }
 
-img {
-  align: middle;
-}
-
 .fa-bars {
   position: fixed;
   top: 10px;
@@ -41,13 +37,13 @@ img {
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
  */
 
- body {
-    overflow-x: hidden;
- }
+body {
+  overflow-x: hidden;
+}
 
- li {
-   color: white;
- }
+li {
+  color: white;
+}
 
 /* Toggle Styles */
 
