@@ -115,29 +115,65 @@ var initMap = function() {
       lat: position.coords.latitude,
       lng: position.coords.longitude
     };
-    var my_location_icon = {
-      url: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
-      scaledSize: new google.maps.Size(20, 32),
-      origin: new google.maps.Point(0, 0),
-      anchor: new google.maps.Point(0, 32)
-    };
-    var marker = new google.maps.Marker({position: my_pos,
-      map: map,
-      icon: my_location_icon});
+      //Check to see if the user's location is supported by citymapper
+      $.ajax({url: "https://developer.citymapper.com/api/1/singlepointcoverage/?coord=" + my_pos.lat + "%2C" + my_pos.lng + "&key=c71aa0158f72d9c3a84be9070cf45427",
+              dataType: 'jsonp',
+              success: function(data){
+                within_bounds(data);
+              },
+              error: function(data){
+                alert("Your location could not be checked by citymapper.  Please reload your page and try again");
+              }
+              });
 
     }, function (error) {
       if (error.code == error.PERMISSION_DENIED)
-        alert("You need location enabled for this website to work.  Please reload this website and enable location services.");
+        alert("You need location enabled for this website to work.  Please reload this website and enable location services.  Your location has been set to London so you can view the functionality of the website");
+        my_pos = {lat: 51.578973, lng: -0.124147};
+        set_location();
       }
     );
   }
 
   else {
-    alert("You need a location enabled device for this website to work.");
+    alert("You need a location enabled device for this website to work.  Your location has been set to London for you to view the functionality of the website.");
+    my_pos = {lat: 51.578973, lng: -0.124147};
+    set_location();
   }
   //Apply bindings only after map has been initialsed
   ko.applyBindings(new ViewModel());
 };
+
+function within_bounds(data){
+  //Handling for the citymapper API coverage checker
+  if (data.error_message) {
+    alert("Your location could not be checked by citymapper.  Please reload the page and try again");
+  }
+
+  else if (data.points[0].covered === false){
+    alert("You do not lie within the citymapper API coverage area.  As such your location has been set to London so you can view the functionality of the website");
+    my_pos = {lat: 51.578973, lng: -0.124147};
+    set_location();
+  }
+  else {
+    set_location();
+  }
+
+}
+
+function set_location(){
+  //Sets the user's location on the map after checking with citymapper
+  var my_location_icon = {
+    url: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+    scaledSize: new google.maps.Size(20, 32),
+    origin: new google.maps.Point(0, 0),
+    anchor: new google.maps.Point(0, 32)
+  };
+
+  var marker = new google.maps.Marker({position: my_pos,
+    map: map,
+    icon: my_location_icon});
+}
 
 function googleError(){
   //Pop up alert if google map script could not be loaded
